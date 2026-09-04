@@ -30,7 +30,7 @@ Users should be able to:
 
 ### Screenshot
 
-![Rock Paper Scissors app preview](./starter/preview.jpg)
+![Rock Paper Scissors app preview](./public/screenshot.jpg)
 
 ### Links
 
