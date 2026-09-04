@@ -2,8 +2,8 @@
 
 :root {
   font-family: 'Barlow Semi Condensed', system-ui, sans-serif;
-  color: #fff;
-  background: hsl(237, 48%, 15%);
+  color: var(--page-text);
+  background: var(--page-bg);
 }
 
 * {
@@ -40,7 +40,7 @@ button {
   align-items: center;
   overflow: hidden;
   padding: 2rem 1.5rem;
-  background: radial-gradient(circle at top, hsl(214, 47%, 23%), hsl(237, 48%, 15%) 72%);
+  background: radial-gradient(circle at top, var(--game-bg-start), var(--game-bg-end) 72%);
 }
 
 .scoreboard {
@@ -48,7 +48,7 @@ button {
   width: min(100%, 43.75rem);
   align-items: center;
   justify-content: space-between;
-  border: 3px solid hsl(246, 11%, 37%);
+  border: 3px solid var(--header-outline);
   border-radius: 1rem;
   padding: 1.1rem 1.4rem 1rem 1.9rem;
 }
@@ -65,14 +65,14 @@ button {
   place-items: center;
   border-radius: 0.5rem;
   padding: 0.65rem 1rem;
-  background: linear-gradient(#fff, #f3f3f3);
-  color: hsl(229, 25%, 31%);
+  background: linear-gradient(var(--panel-bg), var(--panel-bg-soft));
+  color: var(--panel-text);
   line-height: 1;
   text-transform: uppercase;
 }
 
 .scorebox span {
-  color: hsl(229, 64%, 46%);
+  color: var(--score-label);
   font-size: clamp(0.68rem, 2.5vw, 1rem);
   letter-spacing: 0.12rem;
 }
@@ -147,7 +147,7 @@ button.choice:focus-visible,
 .rules-button:focus-visible,
 .play-again:focus-visible,
 .rules-modal button:focus-visible {
-  outline: 3px solid #fff;
+  outline: 3px solid var(--focus-ring);
   outline-offset: 4px;
 }
 
@@ -224,9 +224,9 @@ button.choice:focus-visible,
   aspect-ratio: 1;
   border-radius: 50%;
   background:
-    radial-gradient(circle, rgba(255, 255, 255, 0.08) 0 34%, transparent 34% 100%),
-    radial-gradient(circle, transparent 0 45%, rgba(255, 255, 255, 0.05) 45% 62%, transparent 62% 100%),
-    radial-gradient(circle, transparent 0 64%, rgba(255, 255, 255, 0.035) 64% 78%, transparent 78% 100%);
+    radial-gradient(circle, var(--winner-ring) 0 34%, transparent 34% 100%),
+    radial-gradient(circle, transparent 0 45%, var(--winner-ring-soft) 45% 62%, transparent 62% 100%),
+    radial-gradient(circle, transparent 0 64%, var(--winner-ring-faint) 64% 78%, transparent 78% 100%);
   content: '';
 }
 
@@ -250,8 +250,8 @@ button.choice:focus-visible,
   border: 0;
   border-radius: 0.5rem;
   padding: 0.9rem 1.5rem;
-  background: #fff;
-  color: hsl(229, 25%, 31%);
+  background: var(--panel-bg);
+  color: var(--button-text);
   cursor: pointer;
   font-size: 0.95rem;
   letter-spacing: 0.12rem;
@@ -261,7 +261,7 @@ button.choice:focus-visible,
 
 .play-again:hover,
 .play-again:focus-visible {
-  color: hsl(349, 71%, 52%);
+  color: var(--button-hover);
   transform: translateY(-0.12rem);
   box-shadow: 0 0.7rem 1.5rem rgba(0, 0, 0, 0.24);
 }
@@ -271,11 +271,11 @@ button.choice:focus-visible,
   right: 2rem;
   bottom: 2rem;
   min-width: 8rem;
-  border: 2px solid rgba(255, 255, 255, 0.7);
+  border: 2px solid var(--rules-border);
   border-radius: 0.55rem;
   padding: 0.65rem 1.6rem;
   background: transparent;
-  color: #fff;
+  color: var(--page-text);
   cursor: pointer;
   font-size: 0.85rem;
   letter-spacing: 0.16rem;
@@ -283,7 +283,7 @@ button.choice:focus-visible,
 }
 
 .rules-button:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--rules-hover-bg);
 }
 
 .modal-backdrop {
@@ -293,7 +293,7 @@ button.choice:focus-visible,
   display: grid;
   place-items: center;
   padding: 1.5rem;
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--modal-backdrop);
   animation: fade-in 180ms ease both;
 }
 
@@ -303,8 +303,8 @@ button.choice:focus-visible,
   gap: 2rem;
   border-radius: 0.5rem;
   padding: 2rem;
-  background: #fff;
-  color: hsl(229, 25%, 31%);
+  background: var(--panel-bg);
+  color: var(--panel-text);
   animation: modal-in 220ms ease both;
 }
 
@@ -385,7 +385,7 @@ button.choice:focus-visible,
 @media (max-width: 480px) {
   .modal-backdrop {
     padding: 0;
-    background: #fff;
+    background: var(--panel-bg);
   }
 
   .rules-modal {
@@ -458,34 +458,34 @@ button.choice:focus-visible,
 
 @keyframes score-tick-up {
   0% {
-    color: hsl(229, 25%, 31%);
+    color: var(--panel-text);
     transform: translateY(0.45rem) scale(0.94);
   }
 
   45% {
-    color: hsl(194, 58%, 42%);
+    color: var(--score-up);
     transform: translateY(-0.12rem) scale(1.12);
   }
 
   100% {
-    color: hsl(229, 25%, 31%);
+    color: var(--panel-text);
     transform: translateY(0) scale(1);
   }
 }
 
 @keyframes score-tick-down {
   0% {
-    color: hsl(229, 25%, 31%);
+    color: var(--panel-text);
     transform: translateY(-0.35rem) scale(1.04);
   }
 
   45% {
-    color: hsl(349, 71%, 52%);
+    color: var(--score-down);
     transform: translateY(0.12rem) scale(0.9);
   }
 
   100% {
-    color: hsl(229, 25%, 31%);
+    color: var(--panel-text);
     transform: translateY(0) scale(1);
   }
 }

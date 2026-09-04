@@ -1,1 +1,48 @@
 @import "tailwindcss";
+
+:root {
+  --page-text: #fff;
+  --page-bg: hsl(237, 48%, 15%);
+  --game-bg-start: hsl(214, 47%, 23%);
+  --game-bg-end: hsl(237, 48%, 15%);
+  --panel-bg: #fff;
+  --panel-bg-soft: #f3f3f3;
+  --panel-text: hsl(229, 25%, 31%);
+  --score-label: hsl(229, 64%, 46%);
+  --header-outline: hsl(246, 11%, 37%);
+  --button-text: hsl(229, 25%, 31%);
+  --button-hover: hsl(349, 71%, 52%);
+  --rules-border: rgba(255, 255, 255, 0.7);
+  --rules-hover-bg: rgba(255, 255, 255, 0.12);
+  --modal-backdrop: rgba(0, 0, 0, 0.45);
+  --focus-ring: #fff;
+  --winner-ring: rgba(255, 255, 255, 0.08);
+  --winner-ring-soft: rgba(255, 255, 255, 0.05);
+  --winner-ring-faint: rgba(255, 255, 255, 0.035);
+  --score-up: hsl(194, 58%, 42%);
+  --score-down: hsl(349, 71%, 52%);
+}
+
+:root.theme-light,
+.theme-light {
+  --page-text: hsl(229, 25%, 31%);
+  --page-bg: hsl(220, 38%, 96%);
+  --game-bg-start: hsl(212, 45%, 98%);
+  --game-bg-end: hsl(219, 41%, 89%);
+  --panel-bg: #fff;
+  --panel-bg-soft: hsl(220, 45%, 96%);
+  --panel-text: hsl(229, 25%, 31%);
+  --score-label: hsl(229, 64%, 46%);
+  --header-outline: hsla(229, 25%, 31%, 0.28);
+  --button-text: hsl(229, 25%, 31%);
+  --button-hover: hsl(349, 71%, 52%);
+  --rules-border: hsla(229, 25%, 31%, 0.45);
+  --rules-hover-bg: hsla(229, 25%, 31%, 0.08);
+  --modal-backdrop: rgba(18, 26, 52, 0.26);
+  --focus-ring: hsl(229, 64%, 46%);
+  --winner-ring: rgba(45, 58, 112, 0.08);
+  --winner-ring-soft: rgba(45, 58, 112, 0.055);
+  --winner-ring-faint: rgba(45, 58, 112, 0.035);
+  --score-up: hsl(194, 58%, 42%);
+  --score-down: hsl(349, 71%, 52%);
+}
