@@ -1,10 +1,16 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 
 type ChoiceId = 'paper' | 'scissors' | 'rock'
 type Result = 'win' | 'lose' | 'draw'
+type Scores = {
+  score: number
+  highScore: number
+}
 
 const assetPath = '/images/'
+const scoreStorageKey = 'rock-paper-scissors-score'
+const highScoreStorageKey = 'rock-paper-scissors-high-score'
 
 const choices: Record<
   ChoiceId,
@@ -54,6 +60,22 @@ function getResult(player: ChoiceId, house: ChoiceId): Result {
   return beats[player] === house ? 'win' : 'lose'
 }
 
+function readStoredNumber(key: string) {
+  const storedValue = localStorage.getItem(key)
+  const parsedValue = storedValue ? Number.parseInt(storedValue, 10) : 0
+  return Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : 0
+}
+
+function readStoredScores(): Scores {
+  const savedScore = readStoredNumber(scoreStorageKey)
+  const savedHighScore = Math.max(readStoredNumber(highScoreStorageKey), savedScore)
+
+  return {
+    score: savedScore,
+    highScore: savedHighScore,
+  }
+}
+
 function ChoiceButton({
   choice,
   onClick,
@@ -92,13 +114,14 @@ function ChoiceButton({
 }
 
 function App() {
-  const [score, setScore] = useState(0)
+  const [{ score, highScore }, setScores] = useState<Scores>(() => readStoredScores())
   const [scoreMotion, setScoreMotion] = useState<'up' | 'down' | 'still'>('still')
   const [scoreTick, setScoreTick] = useState(0)
   const [playerChoice, setPlayerChoice] = useState<ChoiceId | null>(null)
   const [houseChoice, setHouseChoice] = useState<ChoiceId | null>(null)
   const [result, setResult] = useState<Result | null>(null)
   const [isRulesOpen, setIsRulesOpen] = useState(false)
+  const [isLightTheme, setIsLightTheme] = useState(false)
 
   const resultText = useMemo(() => {
     if (result === 'win') return 'You win'
@@ -107,6 +130,11 @@ function App() {
     return ''
   }, [result])
 
+  useEffect(() => {
+    localStorage.setItem(scoreStorageKey, String(score))
+    localStorage.setItem(highScoreStorageKey, String(highScore))
+  }, [highScore, score])
+
   function playRound(choiceId: ChoiceId) {
     const house = getHouseChoice()
     const roundResult = getResult(choiceId, house)
@@ -114,23 +142,32 @@ function App() {
     setPlayerChoice(choiceId)
     setHouseChoice(house)
     setResult(roundResult)
-    setScore((currentScore) => {
-      if (roundResult === 'win') {
-        setScoreMotion('up')
+
+    if (roundResult === 'win') {
+      const nextScore = score + 1
+      setScoreMotion('up')
+      setScoreTick((currentTick) => currentTick + 1)
+      setScores((currentScores) => ({
+        score: nextScore,
+        highScore: Math.max(currentScores.highScore, nextScore),
+      }))
+      return
+    }
+
+    if (roundResult === 'lose') {
+      const nextScore = Math.max(0, score - 1)
+      setScoreMotion(nextScore === score ? 'still' : 'down')
+      if (nextScore !== score) {
         setScoreTick((currentTick) => currentTick + 1)
-        return currentScore + 1
       }
-      if (roundResult === 'lose') {
-        const nextScore = Math.max(0, currentScore - 1)
-        setScoreMotion(nextScore === currentScore ? 'still' : 'down')
-        if (nextScore !== currentScore) {
-          setScoreTick((currentTick) => currentTick + 1)
-        }
-        return nextScore
-      }
-      setScoreMotion('still')
-      return currentScore
-    })
+      setScores((currentScores) => ({
+        ...currentScores,
+        score: nextScore,
+      }))
+      return
+    }
+
+    setScoreMotion('still')
   }
 
   function resetRound() {
@@ -140,17 +177,26 @@ function App() {
   }
 
   return (
-    <main className="relative flex min-h-screen flex-col items-center overflow-hidden bg-[radial-gradient(circle_at_top,var(--game-bg-start),var(--game-bg-end)_72%)] px-6 py-8 font-barlow text-page-text max-[720px]:pb-22">
+    <main
+      className={`${isLightTheme ? 'theme-light' : ''} relative flex min-h-screen flex-col items-center overflow-hidden bg-[radial-gradient(circle_at_top,var(--game-bg-start),var(--game-bg-end)_72%)] px-6 py-8 font-barlow text-[var(--page-text)] transition-colors duration-300 max-[720px]:pb-28`}
+    >
       <header
         className="flex w-full max-w-[43.75rem] items-center justify-between rounded-2xl border-3 border-header-outline py-4 pr-5 pl-7 max-[720px]:rounded-lg max-[720px]:py-3 max-[720px]:pr-3 max-[720px]:pl-5"
         aria-label="Game score"
       >
-        <img className="h-auto w-[clamp(5.4rem,20vw,10rem)]" src={`${assetPath}logo.svg`} alt="Rock Paper Scissors" />
+        <img
+          className="h-auto w-[clamp(5.4rem,20vw,10rem)] transition-[filter] duration-300 [filter:var(--logo-filter)]"
+          src={`${assetPath}logo.svg`}
+          alt="Rock Paper Scissors"
+        />
         <div className="grid min-h-[clamp(4.5rem,15vw,7.1rem)] min-w-[clamp(5rem,18vw,9.4rem)] place-items-center rounded-lg bg-linear-to-b from-panel-bg to-panel-bg-soft px-4 py-2.5 text-panel-text uppercase leading-none">
           <span className="text-[clamp(0.68rem,2.5vw,1rem)] tracking-[0.12rem] text-score-label">Score</span>
           <strong key={scoreTick} className={`scorebox__value scorebox__value--${scoreMotion} text-[clamp(2.5rem,8vw,4.1rem)]`}>
             {score}
           </strong>
+          <span className="rounded-full bg-score-label/10 px-2 py-1 text-[0.65rem] tracking-[0.08rem] text-score-label">
+            Best {highScore}
+          </span>
         </div>
       </header>
 
@@ -197,13 +243,36 @@ function App() {
         )}
       </section>
 
-      <button
-        className="absolute right-8 bottom-8 min-w-32 cursor-pointer rounded-lg border-2 border-rules-border bg-transparent px-6 py-2.5 text-[0.85rem] tracking-[0.16rem] text-page-text uppercase hover:bg-rules-hover-bg focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-focus-ring max-[720px]:right-1/2 max-[720px]:bottom-6 max-[720px]:translate-x-1/2"
-        type="button"
-        onClick={() => setIsRulesOpen(true)}
-      >
-        Rules
-      </button>
+      <div className="absolute right-8 bottom-8 flex items-center gap-4 max-[720px]:right-1/2 max-[720px]:bottom-6 max-[720px]:translate-x-1/2 max-[720px]:flex-col-reverse max-[720px]:gap-3">
+        <button
+          className="min-w-32 cursor-pointer rounded-lg border-2 border-[var(--rules-border)] bg-transparent px-6 py-2.5 text-[0.85rem] tracking-[0.16rem] text-[var(--page-text)] uppercase transition-colors duration-200 hover:bg-[var(--rules-hover-bg)] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--focus-ring)]"
+          type="button"
+          onClick={() => setIsRulesOpen(true)}
+        >
+          Rules
+        </button>
+
+        <button
+          className="group flex h-11 min-w-32 cursor-pointer items-center justify-between gap-3 rounded-full border-2 border-[var(--rules-border)] bg-[var(--rules-hover-bg)] px-3 text-[0.78rem] tracking-[0.12rem] text-[var(--page-text)] uppercase transition-[background-color,border-color,color] duration-200 hover:bg-[var(--rules-hover-bg)] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--focus-ring)]"
+          type="button"
+          role="switch"
+          aria-checked={isLightTheme}
+          aria-label={`Switch to ${isLightTheme ? 'dark' : 'light'} theme`}
+          onClick={() => setIsLightTheme((currentTheme) => !currentTheme)}
+        >
+          <span aria-hidden="true">{isLightTheme ? 'Light' : 'Dark'}</span>
+          <span className="relative h-6 w-11 rounded-full bg-panel-bg/90 shadow-inner">
+            <span
+              className={`absolute top-1 grid aspect-square w-4 place-items-center rounded-full bg-score-label text-[0.62rem] leading-none text-panel-bg transition-transform duration-300 ${
+                isLightTheme ? 'translate-x-6' : 'translate-x-1'
+              }`}
+              aria-hidden="true"
+            >
+              {isLightTheme ? 'L' : 'D'}
+            </span>
+          </span>
+        </button>
+      </div>
 
       {isRulesOpen && (
         <div

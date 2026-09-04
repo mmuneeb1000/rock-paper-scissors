@@ -43,6 +43,7 @@
   --winner-ring-faint: rgba(255, 255, 255, 0.035);
   --score-up: hsl(194, 58%, 42%);
   --score-down: hsl(349, 71%, 52%);
+  --logo-filter: none;
 }
 
 :root.theme-light,
@@ -67,6 +68,7 @@
   --winner-ring-faint: rgba(45, 58, 112, 0.035);
   --score-up: hsl(194, 58%, 42%);
   --score-down: hsl(349, 71%, 52%);
+  --logo-filter: brightness(0) saturate(100%) invert(20%) sepia(15%) saturate(1259%) hue-rotate(191deg) brightness(92%) contrast(90%);
 }
 
 @layer base {
