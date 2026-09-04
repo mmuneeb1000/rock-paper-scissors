@@ -1,78 +1,96 @@
-# React + TypeScript + Vite
+# Frontend Mentor - Rock, Paper, Scissors solution
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a solution to the [Rock, Paper, Scissors challenge on Frontend Mentor](https://www.frontendmentor.io/challenges/rock-paper-scissors-game-pTgwgvgH). The project is built with React, Vite, TypeScript, and Tailwind CSS.
 
-Currently, two official plugins are available:
+## Table of contents
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- [Overview](#overview)
+  - [The challenge](#the-challenge)
+  - [Screenshot](#screenshot)
+  - [Links](#links)
+- [My process](#my-process)
+  - [Built with](#built-with)
+  - [What I learned](#what-i-learned)
+  - [Continued development](#continued-development)
+  - [Useful resources](#useful-resources)
+  - [AI collaboration](#ai-collaboration)
+- [Author](#author)
 
-## React Compiler
+## Overview
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### The challenge
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+Users should be able to:
 
-## Expanding the ESLint configuration
+- View the optimal layout for the game depending on their device's screen size
+- Play Rock, Paper, Scissors against the computer
+- Maintain the score state after refreshing the browser
+- View the rules modal
+- Toggle between dark and light themes
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Screenshot
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+![Rock Paper Scissors app preview](./starter/preview.jpg)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Links
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Solution URL: Add your Frontend Mentor solution URL here
+- Live Site URL: Add your deployed site URL here
 
+## My process
+
+### Built with
+
+- Semantic HTML5 markup
+- React
+- TypeScript
+- Vite
+- Tailwind CSS 4
+- CSS custom properties
+- CSS Grid
+- Flexbox
+- Local storage
+- Mobile-first responsive layout
+
+### What I learned
+
+This project was a good pass at combining Tailwind's theme system with CSS custom properties. The app uses Tailwind utilities for most layout, color, spacing, typography, and responsive behavior, while keeping custom CSS for the circular game pieces and keyframe animations.
+
+I also practiced keeping browser state resilient by reading score, high score, and theme preferences from local storage with safe fallbacks.
+
+```ts
+const [{ score, highScore }, setScores] = useState<Scores>(() => readStoredScores())
+const [isLightTheme, setIsLightTheme] = useState(() => readStoredTheme())
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+The result screen also includes a small accessibility improvement: after a round ends, focus moves to the play-again button and the button references the result text.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```tsx
+<button aria-describedby="round-result" aria-label="Play again. Return to choice selection.">
+  Play again
+</button>
 ```
+
+### Continued development
+
+Future improvements could include:
+
+- Adding a score reset button with confirmation
+- Persisting a match history
+- Adding the bonus Rock, Paper, Scissors, Lizard, Spock mode
+- Refining animations with more state-specific timing
+
+### Useful resources
+
+- [Frontend Mentor challenge page](https://www.frontendmentor.io/challenges/rock-paper-scissors-game-pTgwgvgH) - Challenge brief and expected behavior.
+- [Tailwind CSS documentation](https://tailwindcss.com/docs) - Used for utility classes and theme tokens.
+- [React documentation](https://react.dev/) - Used for component state and effects.
+- [Vite documentation](https://vite.dev/) - Used for local development and production builds.
+
+### AI collaboration
+
+I used ChatGPT/Codex to help implement and review the solution. The collaboration focused on building the React game flow, converting styling to Tailwind CSS, checking accessibility, validating responsive layouts, and running final build checks.
+
+## Author
+
+- Frontend Mentor - Add your Frontend Mentor profile here

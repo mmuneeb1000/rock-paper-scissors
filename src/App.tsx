@@ -1,78 +1,98 @@
-import { useEffect, useMemo, useState } from 'react'
-import './App.css'
+import { useEffect, useMemo, useState } from "react";
+import "./App.css";
 
-type ChoiceId = 'paper' | 'scissors' | 'rock'
-type Result = 'win' | 'lose' | 'draw'
+type ChoiceId = "paper" | "scissors" | "rock";
+type Result = "win" | "lose" | "draw";
 type Scores = {
-  score: number
-  highScore: number
-}
+  score: number;
+  highScore: number;
+};
 
-const assetPath = '/images/'
-const scoreStorageKey = 'rock-paper-scissors-score'
-const highScoreStorageKey = 'rock-paper-scissors-high-score'
+const assetPath = "/images/";
+const scoreStorageKey = "rock-paper-scissors-score";
+const highScoreStorageKey = "rock-paper-scissors-high-score";
+const themeStorageKey = "rock-paper-scissors-theme";
 
 const choices: Record<
   ChoiceId,
   {
-    id: ChoiceId
-    label: string
-    icon: string
-    className: string
+    id: ChoiceId;
+    label: string;
+    icon: string;
+    className: string;
   }
 > = {
   paper: {
-    id: 'paper',
-    label: 'Paper',
+    id: "paper",
+    label: "Paper",
     icon: `${assetPath}icon-paper.svg`,
-    className: 'choice--paper',
+    className: "choice--paper",
   },
   scissors: {
-    id: 'scissors',
-    label: 'Scissors',
+    id: "scissors",
+    label: "Scissors",
     icon: `${assetPath}icon-scissors.svg`,
-    className: 'choice--scissors',
+    className: "choice--scissors",
   },
   rock: {
-    id: 'rock',
-    label: 'Rock',
+    id: "rock",
+    label: "Rock",
     icon: `${assetPath}icon-rock.svg`,
-    className: 'choice--rock',
+    className: "choice--rock",
   },
-}
+};
 
-const boardChoices: ChoiceId[] = ['paper', 'scissors', 'rock']
+const boardChoices: ChoiceId[] = ["paper", "scissors", "rock"];
 const beats: Record<ChoiceId, ChoiceId> = {
-  paper: 'rock',
-  scissors: 'paper',
-  rock: 'scissors',
-}
+  paper: "rock",
+  scissors: "paper",
+  rock: "scissors",
+};
 
 function getHouseChoice() {
-  const options = Object.keys(choices) as ChoiceId[]
-  const randomValues = new Uint32Array(1)
-  crypto.getRandomValues(randomValues)
-  return options[randomValues[0] % options.length]
+  const options = Object.keys(choices) as ChoiceId[];
+  const randomValues = new Uint32Array(1);
+  crypto.getRandomValues(randomValues);
+  return options[randomValues[0] % options.length];
 }
 
 function getResult(player: ChoiceId, house: ChoiceId): Result {
-  if (player === house) return 'draw'
-  return beats[player] === house ? 'win' : 'lose'
+  if (player === house) return "draw";
+  return beats[player] === house ? "win" : "lose";
 }
 
 function readStoredNumber(key: string) {
-  const storedValue = localStorage.getItem(key)
-  const parsedValue = storedValue ? Number.parseInt(storedValue, 10) : 0
-  return Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : 0
+  if (typeof localStorage === "undefined") return 0;
+
+  try {
+    const storedValue = localStorage.getItem(key);
+    const parsedValue = storedValue ? Number.parseInt(storedValue, 10) : 0;
+    return Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : 0;
+  } catch {
+    return 0;
+  }
 }
 
 function readStoredScores(): Scores {
-  const savedScore = readStoredNumber(scoreStorageKey)
-  const savedHighScore = Math.max(readStoredNumber(highScoreStorageKey), savedScore)
+  const savedScore = readStoredNumber(scoreStorageKey);
+  const savedHighScore = Math.max(
+    readStoredNumber(highScoreStorageKey),
+    savedScore,
+  );
 
   return {
     score: savedScore,
     highScore: savedHighScore,
+  };
+}
+
+function readStoredTheme() {
+  if (typeof localStorage === "undefined") return false;
+
+  try {
+    return localStorage.getItem(themeStorageKey) === "light";
+  } catch {
+    return false;
   }
 }
 
@@ -82,10 +102,10 @@ function ChoiceButton({
   isWinner = false,
   disabled = false,
 }: {
-  choice: (typeof choices)[ChoiceId]
-  onClick?: () => void
-  isWinner?: boolean
-  disabled?: boolean
+  choice: (typeof choices)[ChoiceId];
+  onClick?: () => void;
+  isWinner?: boolean;
+  disabled?: boolean;
 }) {
   const content = (
     <>
@@ -94,11 +114,11 @@ function ChoiceButton({
       </span>
       <span className="sr-only">{choice.label}</span>
     </>
-  )
+  );
 
   return onClick ? (
     <button
-      className={`choice ${choice.className} ${isWinner ? 'choice--winner' : ''} cursor-pointer transition-[filter,transform] duration-200 ease-out hover:-translate-y-1 hover:brightness-110 focus-visible:-translate-y-1 focus-visible:brightness-110 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-focus-ring`}
+      className={`choice ${choice.className} ${isWinner ? "choice--winner" : ""} cursor-pointer transition-[filter,transform] duration-200 ease-out hover:-translate-y-1 hover:brightness-110 focus-visible:-translate-y-1 focus-visible:brightness-110 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-focus-ring`}
       type="button"
       onClick={onClick}
       disabled={disabled}
@@ -107,78 +127,97 @@ function ChoiceButton({
       {content}
     </button>
   ) : (
-    <div className={`choice ${choice.className} ${isWinner ? 'choice--winner' : ''}`} aria-label={choice.label}>
+    <div
+      className={`choice ${choice.className} ${isWinner ? "choice--winner" : ""}`}
+      aria-label={choice.label}
+    >
       {content}
     </div>
-  )
+  );
 }
 
 function App() {
-  const [{ score, highScore }, setScores] = useState<Scores>(() => readStoredScores())
-  const [scoreMotion, setScoreMotion] = useState<'up' | 'down' | 'still'>('still')
-  const [scoreTick, setScoreTick] = useState(0)
-  const [playerChoice, setPlayerChoice] = useState<ChoiceId | null>(null)
-  const [houseChoice, setHouseChoice] = useState<ChoiceId | null>(null)
-  const [result, setResult] = useState<Result | null>(null)
-  const [isRulesOpen, setIsRulesOpen] = useState(false)
-  const [isLightTheme, setIsLightTheme] = useState(false)
+  const [{ score, highScore }, setScores] = useState<Scores>(() =>
+    readStoredScores(),
+  );
+  const [scoreMotion, setScoreMotion] = useState<"up" | "down" | "still">(
+    "still",
+  );
+  const [scoreTick, setScoreTick] = useState(0);
+  const [playerChoice, setPlayerChoice] = useState<ChoiceId | null>(null);
+  const [houseChoice, setHouseChoice] = useState<ChoiceId | null>(null);
+  const [result, setResult] = useState<Result | null>(null);
+  const [isRulesOpen, setIsRulesOpen] = useState(false);
+  const [isLightTheme, setIsLightTheme] = useState(() => readStoredTheme());
 
   const resultText = useMemo(() => {
-    if (result === 'win') return 'You win'
-    if (result === 'lose') return 'You lose'
-    if (result === 'draw') return 'Draw'
-    return ''
-  }, [result])
+    if (result === "win") return "You win";
+    if (result === "lose") return "You lose";
+    if (result === "draw") return "Draw";
+    return "";
+  }, [result]);
 
   useEffect(() => {
-    localStorage.setItem(scoreStorageKey, String(score))
-    localStorage.setItem(highScoreStorageKey, String(highScore))
-  }, [highScore, score])
+    try {
+      localStorage.setItem(scoreStorageKey, String(score));
+      localStorage.setItem(highScoreStorageKey, String(highScore));
+    } catch {
+      return;
+    }
+  }, [highScore, score]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(themeStorageKey, isLightTheme ? "light" : "dark");
+    } catch {
+      return;
+    }
+  }, [isLightTheme]);
 
   function playRound(choiceId: ChoiceId) {
-    const house = getHouseChoice()
-    const roundResult = getResult(choiceId, house)
+    const house = getHouseChoice();
+    const roundResult = getResult(choiceId, house);
 
-    setPlayerChoice(choiceId)
-    setHouseChoice(house)
-    setResult(roundResult)
+    setPlayerChoice(choiceId);
+    setHouseChoice(house);
+    setResult(roundResult);
 
-    if (roundResult === 'win') {
-      const nextScore = score + 1
-      setScoreMotion('up')
-      setScoreTick((currentTick) => currentTick + 1)
+    if (roundResult === "win") {
+      const nextScore = score + 1;
+      setScoreMotion("up");
+      setScoreTick((currentTick) => currentTick + 1);
       setScores((currentScores) => ({
         score: nextScore,
         highScore: Math.max(currentScores.highScore, nextScore),
-      }))
-      return
+      }));
+      return;
     }
 
-    if (roundResult === 'lose') {
-      const nextScore = Math.max(0, score - 1)
-      setScoreMotion(nextScore === score ? 'still' : 'down')
+    if (roundResult === "lose") {
+      const nextScore = Math.max(0, score - 1);
+      setScoreMotion(nextScore === score ? "still" : "down");
       if (nextScore !== score) {
-        setScoreTick((currentTick) => currentTick + 1)
+        setScoreTick((currentTick) => currentTick + 1);
       }
       setScores((currentScores) => ({
         ...currentScores,
         score: nextScore,
-      }))
-      return
+      }));
+      return;
     }
 
-    setScoreMotion('still')
+    setScoreMotion("still");
   }
 
   function resetRound() {
-    setPlayerChoice(null)
-    setHouseChoice(null)
-    setResult(null)
+    setPlayerChoice(null);
+    setHouseChoice(null);
+    setResult(null);
   }
 
   return (
     <main
-      className={`${isLightTheme ? 'theme-light' : ''} relative flex min-h-screen flex-col items-center overflow-hidden bg-[radial-gradient(circle_at_top,var(--game-bg-start),var(--game-bg-end)_72%)] px-6 py-8 font-barlow text-[var(--page-text)] transition-colors duration-300 max-[720px]:pb-28`}
+      className={`${isLightTheme ? "theme-light" : ""} relative flex h-dvh min-h-[42rem] flex-col items-center overflow-hidden bg-[radial-gradient(circle_at_top,var(--game-bg-start),var(--game-bg-end)_72%)] px-6 py-8 font-barlow text-[var(--page-text)] transition-colors duration-300 max-[720px]:min-h-[45rem] max-[720px]:pb-28`}
     >
       <header
         className="flex w-full max-w-[43.75rem] items-center justify-between rounded-2xl border-3 border-header-outline py-4 pr-5 pl-7 max-[720px]:rounded-lg max-[720px]:py-3 max-[720px]:pr-3 max-[720px]:pl-5"
@@ -190,8 +229,13 @@ function App() {
           alt="Rock Paper Scissors"
         />
         <div className="grid min-h-[clamp(4.5rem,15vw,7.1rem)] min-w-[clamp(5rem,18vw,9.4rem)] place-items-center rounded-lg bg-linear-to-b from-panel-bg to-panel-bg-soft px-4 py-2.5 text-panel-text uppercase leading-none">
-          <span className="text-[clamp(0.68rem,2.5vw,1rem)] tracking-[0.12rem] text-score-label">Score</span>
-          <strong key={scoreTick} className={`scorebox__value scorebox__value--${scoreMotion} text-[clamp(2.5rem,8vw,4.1rem)]`}>
+          <span className="text-[clamp(0.68rem,2.5vw,1rem)] tracking-[0.12rem] text-score-label">
+            Score
+          </span>
+          <strong
+            key={scoreTick}
+            className={`scorebox__value scorebox__value--${scoreMotion} text-[clamp(2.5rem,8vw,4.1rem)]`}
+          >
             {score}
           </strong>
           <span className="rounded-full bg-score-label/10 px-2 py-1 text-[0.65rem] tracking-[0.08rem] text-score-label">
@@ -200,25 +244,40 @@ function App() {
         </div>
       </header>
 
-      <section className="grid w-full flex-1 place-items-center pt-10 pb-18 max-[720px]:pt-16" aria-live="polite">
+      <section
+        className="grid w-full flex-1 place-items-center pt-10 pb-18 max-[720px]:pt-16"
+        aria-live="polite"
+      >
         {!playerChoice || !houseChoice || !result ? (
           <div
             className="choice-board grid aspect-[1.05] w-[min(80vw,29.7rem)] grid-cols-2 grid-rows-2 bg-[length:68%] bg-[position:center_58%] bg-no-repeat max-[720px]:w-[min(88vw,22rem)]"
             style={{ backgroundImage: `url(${assetPath}bg-triangle.svg)` }}
           >
             {boardChoices.map((choiceId) => (
-              <ChoiceButton key={choiceId} choice={choices[choiceId]} onClick={() => playRound(choiceId)} />
+              <ChoiceButton
+                key={choiceId}
+                choice={choices[choiceId]}
+                onClick={() => playRound(choiceId)}
+              />
             ))}
           </div>
         ) : (
           <div className="result-board grid w-full max-w-[60rem] grid-cols-[1fr_auto_1fr] items-center justify-items-center gap-[clamp(1rem,4vw,4rem)] max-[720px]:grid-cols-2 max-[720px]:gap-x-[clamp(1rem,4vw,4rem)] max-[720px]:gap-y-14">
             <div className="picked picked--player flex min-w-0 flex-col items-center gap-[clamp(1.8rem,5vw,4rem)] max-[720px]:flex-col-reverse max-[720px]:gap-6">
-              <p className="m-0 text-center text-[clamp(0.9rem,2.3vw,1.25rem)] font-bold tracking-[0.1rem] uppercase">You picked</p>
-              <ChoiceButton choice={choices[playerChoice]} isWinner={result === 'win'} />
+              <p className="m-0 text-center text-[clamp(0.9rem,2.3vw,1.25rem)] font-bold tracking-[0.1rem] uppercase">
+                You picked
+              </p>
+              <ChoiceButton
+                choice={choices[playerChoice]}
+                isWinner={result === "win"}
+              />
             </div>
 
             <div className="result-panel grid justify-items-center gap-4 uppercase max-[720px]:col-span-2 max-[720px]:row-start-2">
-              <h1 className="m-0 text-center text-[clamp(3rem,7vw,3.8rem)] leading-[0.9]" id="round-result">
+              <h1
+                className="m-0 text-center text-[clamp(3rem,7vw,3.8rem)] leading-[0.9]"
+                id="round-result"
+              >
                 {resultText}
               </h1>
               <button
@@ -237,7 +296,10 @@ function App() {
               <p className="m-0 text-center text-[clamp(0.9rem,2.3vw,1.25rem)] font-bold tracking-[0.1rem] uppercase">
                 The house picked
               </p>
-              <ChoiceButton choice={choices[houseChoice]} isWinner={result === 'lose'} />
+              <ChoiceButton
+                choice={choices[houseChoice]}
+                isWinner={result === "lose"}
+              />
             </div>
           </div>
         )}
@@ -253,22 +315,22 @@ function App() {
         </button>
 
         <button
-          className="group flex h-11 min-w-32 cursor-pointer items-center justify-between gap-3 rounded-full border-2 border-[var(--rules-border)] bg-[var(--rules-hover-bg)] px-3 text-[0.78rem] tracking-[0.12rem] text-[var(--page-text)] uppercase transition-[background-color,border-color,color] duration-200 hover:bg-[var(--rules-hover-bg)] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--focus-ring)]"
+          className="group flex h-11 min-w-32 cursor-pointer items-center justify-between gap-3 rounded-lg border-2 border-[var(--rules-border)] bg-[var(--rules-hover-bg)] px-3 text-[0.78rem] tracking-[0.12rem] text-[var(--page-text)] uppercase transition-[background-color,border-color,color] duration-200 hover:bg-[var(--rules-hover-bg)] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--focus-ring)]"
           type="button"
           role="switch"
           aria-checked={isLightTheme}
-          aria-label={`Switch to ${isLightTheme ? 'dark' : 'light'} theme`}
+          aria-label={`Switch to ${isLightTheme ? "dark" : "light"} theme`}
           onClick={() => setIsLightTheme((currentTheme) => !currentTheme)}
         >
-          <span aria-hidden="true">{isLightTheme ? 'Light' : 'Dark'}</span>
-          <span className="relative h-6 w-11 rounded-full bg-panel-bg/90 shadow-inner">
+          <span aria-hidden="true">{isLightTheme ? "Light" : "Dark"}</span>
+          <span className="relative h-6 w-11 rounded-xl bg-panel-bg/90 shadow-inner">
             <span
-              className={`absolute top-1 grid aspect-square w-4 place-items-center rounded-full bg-score-label text-[0.62rem] leading-none text-panel-bg transition-transform duration-300 ${
-                isLightTheme ? 'translate-x-6' : 'translate-x-1'
+              className={`absolute top-1 grid aspect-square w-4 place-items-center rounded-xl bg-score-label text-[0.62rem] leading-none text-panel-bg transition-transform duration-300 ${
+                isLightTheme ? "translate-x-6" : "translate-x-1"
               }`}
               aria-hidden="true"
             >
-              {isLightTheme ? 'L' : 'D'}
+              {isLightTheme ? "L" : "D"}
             </span>
           </span>
         </button>
@@ -286,7 +348,10 @@ function App() {
             aria-labelledby="rules-title"
           >
             <div className="flex items-center justify-between max-[480px]:contents">
-              <h2 className="m-0 text-3xl uppercase max-[480px]:text-center" id="rules-title">
+              <h2
+                className="m-0 text-3xl uppercase max-[480px]:text-center"
+                id="rules-title"
+              >
                 Rules
               </h2>
               <button
@@ -307,7 +372,7 @@ function App() {
         </div>
       )}
     </main>
-  )
+  );
 }
 
-export default App
+export default App;
