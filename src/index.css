@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+@theme {
+  --font-barlow: "Barlow Semi Condensed", system-ui, sans-serif;
+
+  --color-page-text: var(--page-text);
+  --color-page-bg: var(--page-bg);
+  --color-game-bg-start: var(--game-bg-start);
+  --color-game-bg-end: var(--game-bg-end);
+  --color-panel-bg: var(--panel-bg);
+  --color-panel-bg-soft: var(--panel-bg-soft);
+  --color-panel-text: var(--panel-text);
+  --color-score-label: var(--score-label);
+  --color-header-outline: var(--header-outline);
+  --color-button-text: var(--button-text);
+  --color-button-hover: var(--button-hover);
+  --color-rules-border: var(--rules-border);
+  --color-rules-hover-bg: var(--rules-hover-bg);
+  --color-modal-backdrop: var(--modal-backdrop);
+  --color-focus-ring: var(--focus-ring);
+  --color-score-up: var(--score-up);
+  --color-score-down: var(--score-down);
+}
+
 :root {
   --page-text: #fff;
   --page-bg: hsl(237, 48%, 15%);
