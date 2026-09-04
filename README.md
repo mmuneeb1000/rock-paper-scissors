@@ -34,8 +34,8 @@ Users should be able to:
 
 ### Links
 
-- Solution URL: Add your Frontend Mentor solution URL here
-- Live Site URL: Add your deployed site URL here
+- Solution URL: https://www.frontendmentor.io/solutions/rock-paper-scissors-vs-computer-using-react-typescript-and-tailwindcss-XvJ6dSzZol
+- Live Site URL: https://rockpaperscissorsfm.netlify.app/
 
 ## My process
 
@@ -59,14 +59,19 @@ This project was a good pass at combining Tailwind's theme system with CSS custo
 I also practiced keeping browser state resilient by reading score, high score, and theme preferences from local storage with safe fallbacks.
 
 ```ts
-const [{ score, highScore }, setScores] = useState<Scores>(() => readStoredScores())
-const [isLightTheme, setIsLightTheme] = useState(() => readStoredTheme())
+const [{ score, highScore }, setScores] = useState<Scores>(() =>
+  readStoredScores(),
+);
+const [isLightTheme, setIsLightTheme] = useState(() => readStoredTheme());
 ```
 
 The result screen also includes a small accessibility improvement: after a round ends, focus moves to the play-again button and the button references the result text.
 
 ```tsx
-<button aria-describedby="round-result" aria-label="Play again. Return to choice selection.">
+<button
+  aria-describedby="round-result"
+  aria-label="Play again. Return to choice selection."
+>
   Play again
 </button>
 ```
@@ -93,4 +98,8 @@ I used ChatGPT/Codex to help implement and review the solution. The collaboratio
 
 ## Author
 
-- Frontend Mentor - Add your Frontend Mentor profile here
+M. Muneeb
+
+Website: https://www.webdevpk.store
+Frontend Mentor: https://www.frontendmentor.io/profile/mmuneeb1000
+GitHub: https://github.com/mmuneeb1000
