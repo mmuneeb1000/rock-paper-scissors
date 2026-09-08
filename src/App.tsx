@@ -183,6 +183,10 @@ function App() {
   }, [highScore, score]);
 
   useEffect(() => {
+    const root = document.documentElement;
+
+    root.classList.toggle("theme-light", isLightTheme);
+
     try {
       localStorage.setItem(themeStorageKey, isLightTheme ? "light" : "dark");
     } catch {
@@ -257,11 +261,7 @@ function App() {
   }
 
   return (
-    <main
-      className={`${
-        isLightTheme ? "theme-light" : ""
-      } relative flex h-dvh min-h-[42rem] flex-col items-center overflow-hidden bg-[radial-gradient(circle_at_top,var(--game-bg-start),var(--game-bg-end)_72%)] px-6 py-8 font-barlow text-[var(--page-text)] transition-colors duration-300 max-[720px]:min-h-[45rem] max-[720px]:pb-28`}
-    >
+    <main className="relative flex h-dvh min-h-[42rem] flex-col items-center overflow-hidden bg-[radial-gradient(circle_at_top,var(--game-bg-start),var(--game-bg-end)_72%)] px-6 py-8 font-barlow text-[var(--page-text)] transition-colors duration-300 max-[720px]:min-h-[45rem] max-[720px]:pb-28">
       <header
         className="flex w-full max-w-[43.75rem] items-center justify-between rounded-2xl border-3 border-header-outline py-4 pr-5 pl-7 max-[720px]:rounded-lg max-[720px]:py-3 max-[720px]:pr-3 max-[720px]:pl-5"
         aria-label="Game score"
