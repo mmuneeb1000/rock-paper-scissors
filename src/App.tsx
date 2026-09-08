@@ -387,7 +387,7 @@ function App() {
           onClick={resetHighScore}
           aria-label="Reset score and high score"
         >
-          Reset score
+          Reset
         </button>
 
         <button
