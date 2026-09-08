@@ -391,7 +391,7 @@ function App() {
         </button>
 
         <button
-          className="group flex h-11 min-w-32 cursor-pointer items-center justify-between gap-3 rounded-lg border-2 border-[var(--rules-border)] bg-[var(--rules-hover-bg)] px-3 text-[0.78rem] tracking-[0.12rem] text-[var(--page-text)] uppercase transition-[background-color,border-color,color] duration-300 hover:bg-[var(--rules-hover-bg)] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--focus-ring)]"
+          className="group flex h-11 min-w-16 cursor-pointer items-center justify-between gap-3 rounded-lg border-2 border-[var(--rules-border)] bg-[var(--rules-hover-bg)] px-3 text-[0.78rem] tracking-[0.12rem] text-[var(--page-text)] uppercase transition-[background-color,border-color,color] duration-300 hover:bg-[var(--rules-hover-bg)] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--focus-ring)]"
           type="button"
           role="switch"
           aria-checked={isLightTheme}
