@@ -398,8 +398,6 @@ function App() {
           aria-label={`Switch to ${isLightTheme ? "dark" : "light"} theme`}
           onClick={() => setIsLightTheme((currentTheme) => !currentTheme)}
         >
-          <span aria-hidden="true">{isLightTheme ? "Light" : "Dark"}</span>
-
           <span className="relative h-6 w-11 rounded-xl bg-panel-bg/90 shadow-inner">
             <span
               className={`absolute top-1 grid aspect-square w-4 place-items-center rounded-xl bg-score-label text-[0.62rem] leading-none text-panel-bg transition-transform duration-300 ${
