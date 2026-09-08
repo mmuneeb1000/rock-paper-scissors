@@ -3,6 +3,7 @@ import "./App.css";
 
 type ChoiceId = "paper" | "scissors" | "rock";
 type Result = "win" | "lose" | "draw";
+
 type Scores = {
   score: number;
   highScore: number;
@@ -256,6 +257,17 @@ function App() {
     setResult(null);
   }
 
+  function resetHighScore() {
+    setScores({
+      score: 0,
+      highScore: 0,
+    });
+
+    setScoreMotion("still");
+    setScoreTick((currentTick) => currentTick + 1);
+    resetRound();
+  }
+
   function closeRules() {
     dialogRef.current?.close();
   }
@@ -367,6 +379,15 @@ function App() {
           onClick={() => setIsRulesOpen(true)}
         >
           Rules
+        </button>
+
+        <button
+          className="min-w-32 cursor-pointer rounded-lg border-2 border-[var(--rules-border)] bg-transparent px-6 py-2.5 text-[0.85rem] tracking-[0.16rem] text-[var(--page-text)] uppercase transition-colors duration-200 hover:bg-[var(--rules-hover-bg)] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--focus-ring)]"
+          type="button"
+          onClick={resetHighScore}
+          aria-label="Reset score and high score"
+        >
+          Reset score
         </button>
 
         <button
