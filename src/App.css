@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&display=swap");
 
 .choice {
   --outer: hsl(229, 89%, 62%);
@@ -47,9 +47,19 @@
   border-radius: 9999px;
   background:
     radial-gradient(circle, var(--winner-ring) 0 34%, transparent 34% 100%),
-    radial-gradient(circle, transparent 0 45%, var(--winner-ring-soft) 45% 62%, transparent 62% 100%),
-    radial-gradient(circle, transparent 0 64%, var(--winner-ring-faint) 64% 78%, transparent 78% 100%);
-  content: '';
+    radial-gradient(
+      circle,
+      transparent 0 45%,
+      var(--winner-ring-soft) 45% 62%,
+      transparent 62% 100%
+    ),
+    radial-gradient(
+      circle,
+      transparent 0 64%,
+      var(--winner-ring-faint) 64% 78%,
+      transparent 78% 100%
+    );
+  content: "";
 }
 
 .choice-board {
@@ -90,6 +100,22 @@
 
 .rules-modal {
   animation: modal-in 220ms ease both;
+}
+.rules-dialog {
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  max-width: none;
+  max-height: none;
+}
+
+.rules-dialog::backdrop {
+  background: var(--modal-backdrop);
+}
+
+.rules-dialog:not([open]) {
+  display: none;
 }
 
 @media (max-width: 720px) {
